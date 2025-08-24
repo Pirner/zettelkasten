@@ -3,13 +3,14 @@ import numpy as np
 from tqdm import tqdm, trange
 
 import torch
-import torch.nn as nn
 from torch.optim import Adam
 from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
 
 from torchvision.transforms import ToTensor
 from torchvision.datasets.mnist import MNIST
+
+from vit_model import ViT
 
 np.random.seed(0)
 torch.manual_seed(0)
@@ -25,11 +26,25 @@ def main():
     train_loader = DataLoader(train_set, shuffle=True, batch_size=128)
     test_loader = DataLoader(test_set, shuffle=False, batch_size=128)
 
+    d_model = 9
+    img_size = (1, 28, 28)
+    n_heads = 3
+    n_layers = 3
+
     # Defining model and training options
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Using device: ", device, f"({torch.cuda.get_device_name(device)})" if torch.cuda.is_available() else "")
-    model = MyViT((1, 28, 28), n_patches=7, n_blocks=2, hidden_d=8, n_heads=2, out_d=10).to(device)
-    N_EPOCHS = 5
+    # model = MyViT((1, 28, 28), n_patches=7, n_blocks=2, hidden_d=8, n_heads=2, out_d=10).to(device)
+    model = ViT(
+        n_layers=n_layers,
+        chw=img_size,
+        n_patches=7,
+        d_model=d_model,
+        n_heads=n_heads,
+        n_classes=10,
+    )
+    model = model.to(device)
+    N_EPOCHS = 20
     LR = 0.005
 
     # Training loop
