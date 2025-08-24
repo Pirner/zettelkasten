@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 from torchvision.transforms import ToTensor
 from torchvision.datasets.mnist import MNIST
 
-from vit_model import ViT
+from models.vit import ViT
 
 np.random.seed(0)
 torch.manual_seed(0)
@@ -26,7 +26,7 @@ def main():
     train_loader = DataLoader(train_set, shuffle=True, batch_size=128)
     test_loader = DataLoader(test_set, shuffle=False, batch_size=128)
 
-    d_model = 9
+    d_model = 18
     img_size = (1, 28, 28)
     n_heads = 3
     n_layers = 3
@@ -44,15 +44,15 @@ def main():
         n_classes=10,
     )
     model = model.to(device)
-    N_EPOCHS = 20
-    LR = 0.005
+    N_EPOCHS = 40
+    LR = 0.0001
 
     # Training loop
     optimizer = Adam(model.parameters(), lr=LR)
     criterion = CrossEntropyLoss()
     for epoch in trange(N_EPOCHS, desc="Training"):
         train_loss = 0.0
-        for batch in tqdm(train_loader, desc=f"Epoch {epoch + 1} in training", leave=False):
+        for batch in tqdm(train_loader, desc=f"Epoch {epoch + 1} in training"):
             x, y = batch
             x, y = x.to(device), y.to(device)
             y_hat = model(x)

@@ -1,6 +1,6 @@
 import torch
 
-from vit_model import ViT
+from scripting.vit_model import ViT
 
 
 if __name__ == '__main__':
