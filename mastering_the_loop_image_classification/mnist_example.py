@@ -26,9 +26,9 @@ def main():
     train_loader = DataLoader(train_set, shuffle=True, batch_size=128)
     test_loader = DataLoader(test_set, shuffle=False, batch_size=128)
 
-    d_model = 18
+    d_model = 16
     img_size = (1, 28, 28)
-    n_heads = 3
+    n_heads = 4
     n_layers = 3
 
     # Defining model and training options
@@ -50,7 +50,8 @@ def main():
     # Training loop
     optimizer = Adam(model.parameters(), lr=LR)
     criterion = CrossEntropyLoss()
-    for epoch in trange(N_EPOCHS, desc="Training"):
+    for epoch in range(N_EPOCHS):
+        print('[INFO] running {}|{}'.format(epoch + 1, N_EPOCHS))
         train_loss = 0.0
         for batch in tqdm(train_loader, desc=f"Epoch {epoch + 1} in training"):
             x, y = batch
