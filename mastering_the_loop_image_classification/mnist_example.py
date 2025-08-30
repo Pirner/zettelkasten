@@ -1,7 +1,7 @@
 import numpy as np
 
-from tqdm import tqdm, trange
-
+import pandas as pd
+from tqdm import tqdm
 import torch
 from torch.optim import Adam
 from torch.nn import CrossEntropyLoss
@@ -44,15 +44,18 @@ def main():
         n_classes=10,
     )
     model = model.to(device)
-    N_EPOCHS = 40
+    N_EPOCHS = 100
     LR = 0.0001
 
     # Training loop
+    performance = []
     optimizer = Adam(model.parameters(), lr=LR)
     criterion = CrossEntropyLoss()
     for epoch in range(N_EPOCHS):
         print('[INFO] running {}|{}'.format(epoch + 1, N_EPOCHS))
         train_loss = 0.0
+        correct, total = 0, 0
+
         for batch in tqdm(train_loader, desc=f"Epoch {epoch + 1} in training"):
             x, y = batch
             x, y = x.to(device), y.to(device)
@@ -65,7 +68,15 @@ def main():
             loss.backward()
             optimizer.step()
 
+            correct += torch.sum(torch.argmax(y_hat, dim=1) == y).detach().cpu().item()
+            total += len(x)
+
         print(f"Epoch {epoch + 1}/{N_EPOCHS} loss: {train_loss:.2f}")
+        print(f"Train accuracy: {correct / total * 100:.2f}%")
+        performance.append({
+            'train_loss': train_loss,
+            'train_accuracy': correct / total * 100,
+        })
 
     # Test loop
     with torch.no_grad():
@@ -82,6 +93,8 @@ def main():
             total += len(x)
         print(f"Test loss: {test_loss:.2f}")
         print(f"Test accuracy: {correct / total * 100:.2f}%")
+    df = pd.DataFrame(performance)
+    df.to_csv('train_logs.csv')
 
 
 if __name__ == '__main__':
