@@ -1,0 +1,24 @@
+# model specific
+model_type:
+  'vit'
+d_model:
+  16
+im_height:
+  224
+im_width:
+  224
+n_heads:
+  4
+n_layers:
+  3
+n_classes:
+  10
+n_patches:
+  7
+# training specific
+epochs:
+  100
+learning_rate:
+  0.001
+batch_size:
+  32
