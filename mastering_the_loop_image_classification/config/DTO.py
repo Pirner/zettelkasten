@@ -17,3 +17,8 @@ class TrainingConfig:
     epochs: int
     learning_rate: float
     batch_size: int
+
+    # dataset and logging
+    train_dataset_path: str
+    val_dataset_path: str
+    test_dataset_path: str

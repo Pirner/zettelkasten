@@ -1,8 +1,12 @@
 from pprint import pprint
 
+from torch.utils.data import DataLoader
 import yaml
 
 from config.DTO import TrainingConfig
+from data.dataset import ClassificationDataset
+from data.transformation import DataTransformation
+from training.trainer import ImageClassificationTrainer
 
 
 def main():
@@ -15,16 +19,31 @@ def main():
             print(exc)
 
     pprint('[INFO] training model with: {}'.format(config))
-    # all training job parameters
-    # d_model = 16
-    # img_size = (1, 28, 28)
-    # n_heads = 4
-    # n_layers = 3
-    # n_classes = 10
-    # n_patches = 7
-    # N_EPOCHS = 100
-    # LR = 0.0001
-    # batch_size = 32
+    # construct data loaders
+    train_dataset = ClassificationDataset(
+        dataset_path=config.train_dataset_path,
+        n_classes=config.n_classes,
+        transforms=DataTransformation.get_train_transforms(im_h=config.im_height, im_w=config.im_width),
+    )
+    val_dataset = ClassificationDataset(
+        dataset_path=config.val_dataset_path,
+        n_classes=config.n_classes,
+        transforms=DataTransformation.get_val_transforms(im_h=config.im_height, im_w=config.im_width),
+    )
+    test_dataset = ClassificationDataset(
+        dataset_path=config.test_dataset_path,
+        n_classes=config.n_classes,
+        transforms=DataTransformation.get_val_transforms(im_h=config.im_height, im_w=config.im_width),
+    )
+
+    train_dataloader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True)
+    val_dataloader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=False)
+    test_dataloader = DataLoader(test_dataset, batch_size=config.batch_size, shuffle=False)
+
+    trainer = ImageClassificationTrainer(config=config)
+    trainer.build_model()
+    trainer.train_model(train_loader=train_dataloader, val_loader=val_dataloader)
+    trainer.test_model(test_loader=test_dataloader)
 
 
 if __name__ == '__main__':

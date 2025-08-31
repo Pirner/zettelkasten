@@ -12,7 +12,7 @@ n_heads:
 n_layers:
   3
 n_classes:
-  10
+  5
 n_patches:
   7
 # training specific
@@ -21,4 +21,12 @@ epochs:
 learning_rate:
   0.001
 batch_size:
-  32
+  4
+
+# dataset and logging
+train_dataset_path:
+  "C:/data/retina_dataset/Diabetic Retinopathy/train"
+val_dataset_path:
+  "C:/data/retina_dataset/Diabetic Retinopathy/valid"
+test_dataset_path:
+  "C:/data/retina_dataset/Diabetic Retinopathy/test"
