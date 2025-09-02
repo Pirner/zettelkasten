@@ -1,9 +1,17 @@
+import torch
+from torch.nn import CrossEntropyLoss
+from torch.optim import Adam
+from tqdm import tqdm
+
 from config.DTO import TrainingConfig
 from models.vit import ViT
+from models.custom import CustomModel
 
 
 class ImageClassificationTrainer:
     model = None
+    loss_fn = None
+    optimizer = None
 
     def __init__(self, config: TrainingConfig):
         """
@@ -11,6 +19,7 @@ class ImageClassificationTrainer:
         :param config: the trainer configuration for the trainer to perform training of an image classification model
         """
         self.config = config
+        self.loss_fn = CrossEntropyLoss()
 
     def build_model(self):
         """
@@ -27,7 +36,32 @@ class ImageClassificationTrainer:
                 n_classes=self.config.n_classes,
             )
         else:
-            raise Exception('unknown model type: ', self.config.model_type)
+            self.model = CustomModel(config=self.config)
+            # raise Exception('unknown model type: ', self.config.model_type)
+
+    def _run_train_epoch(self, train_loader):
+        """
+        run a training epoch with the data loader
+        :param train_loader: for training data
+        :return:
+        """
+        train_losses = []
+
+        for batch in tqdm(train_loader, desc='Running Training epoch'):
+            x, y = batch
+            x, y = x.to(self.config.device), y.to(self.config.device)
+            y_hat = self.model(x)
+            loss = self.loss_fn(y_hat, y)
+
+            self.optimizer.zero_grad()
+            loss.backward()
+            self.optimizer.step()
+
+            train_losses.append(loss)
+
+        train_losses = torch.tensor(train_losses)
+        avg_train_loss = torch.mean(train_losses)
+        print(avg_train_loss)
 
     def train_model(self, train_loader, val_loader):
         """
@@ -36,6 +70,13 @@ class ImageClassificationTrainer:
         :param val_loader: loader for the validation data
         :return:
         """
+        self.optimizer = Adam(self.model.parameters(), lr=self.config.learning_rate)
+        self.model = self.model.to(self.config.device)
+
+        for e in range(self.config.epochs):
+            print('[INFO] running epoch {}/{}'.format(e + 1, self.config.epochs))
+            self._run_train_epoch(train_loader)
+
         raise NotImplementedError('foobar')
 
     def test_model(self, test_loader):

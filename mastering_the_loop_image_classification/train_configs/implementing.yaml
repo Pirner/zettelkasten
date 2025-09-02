@@ -1,27 +1,31 @@
 # model specific
 model_type:
   'vit'
+backbone:
+  'resnet18'
 d_model:
-  16
+  1024
 im_height:
-  224
+  448
 im_width:
-  224
+  448
 n_heads:
-  4
+  8
 n_layers:
-  3
+  8
 n_classes:
   5
 n_patches:
-  7
+  16
 # training specific
 epochs:
   100
 learning_rate:
-  0.001
+  0.0001
 batch_size:
   4
+device:
+  "cuda"
 
 # dataset and logging
 train_dataset_path:
