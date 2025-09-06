@@ -6,13 +6,14 @@ from typing import Optional
 class TrainingConfig:
     # model specific
     model_type: str
-    d_model: int
     im_height: int
     im_width: int
-    n_heads: int
-    n_layers: int
+    patch_size: int
     n_classes: int
-    n_patches: int
+    vit_dim: int
+    vit_depth: int
+    vit_heads: int
+    vit_mlp_dim: int
 
     # training specific
     epochs: int

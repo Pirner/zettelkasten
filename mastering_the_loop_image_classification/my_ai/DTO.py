@@ -14,7 +14,7 @@ class DataPoint:
 
     def get_im_data(self):
         if self.im_data is None and self.im_path is None:
-            raise Exception('image data point has no image data available')
+            raise Exception('image my_ai point has no image my_ai available')
         if self.im_data is not None:
             return self.im_data
         else:

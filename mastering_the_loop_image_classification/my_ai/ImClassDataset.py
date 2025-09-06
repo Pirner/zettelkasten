@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from torch.utils.data import Dataset
 
-from data.DTO import DataPoint
+from my_ai.DTO import DataPoint
 
 
 class ClassificationDataset(Dataset):
@@ -30,7 +30,7 @@ class ClassificationDataset(Dataset):
         :param dataset_path: the path to the dataset location, assumed is a folder with images that contains .jpg files
         and an annotation.csv file
         :param n_classes: number of classes represented through the dataset
-        :param transforms: the transformations to apply to the image while loading the data
+        :param transforms: the transformations to apply to the image while loading the my_ai
         """
         self.dataset_path = dataset_path
         self.n_classes = n_classes
@@ -40,7 +40,7 @@ class ClassificationDataset(Dataset):
 
     def _init_dataset(self):
         """
-        initialize the data points to make the dataset ready
+        initialize the my_ai points to make the dataset ready
         :return:
         """
         self.df = pd.read_csv(os.path.join(self.dataset_path, 'annotations.csv'))
@@ -60,5 +60,8 @@ class ClassificationDataset(Dataset):
         data_point = self.data[item]
         im_data = data_point.get_im_data()
         label = data_point.label
-        im_transformed = self.transforms(image=im_data)['image']
-        return im_transformed, label
+        if self.transforms is None:
+            return im_data, label
+        else:
+            im_transformed = self.transforms(image=im_data)['image']
+            return im_transformed, label

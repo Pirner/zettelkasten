@@ -28,21 +28,32 @@ class ImageClassificationTrainer:
         """
         if self.config.model_type.lower() == 'vit':
             self.model = ViT(
-                n_layers=self.config.n_layers,
-                chw=(3, self.config.im_height, self.config.im_width),
-                n_patches=self.config.n_patches,
-                d_model=self.config.d_model,
-                n_heads=self.config.n_heads,
-                n_classes=self.config.n_classes,
+                image_size=self.config.im_height,
+                patch_size=self.config.patch_size,
+                num_classes=self.config.n_classes,
+                dim=self.config.vit_dim,
+                depth=self.config.vit_dim,
+                heads=self.config.vit_heads,
+                mlp_dim=self.config.vit_mlp_dim,
+                dropout=0.1,
+                emb_dropout=0.1
             )
+            # self.model = ViT(
+            # n_layers=self.config.n_layers,
+            # chw=(3, self.config.im_height, self.config.im_width),
+            # n_patches=self.config.n_patches,
+            # d_model=self.config.d_model,
+            # n_heads=self.config.n_heads,
+            # n_classes=self.config.n_classes,
+            # )
         else:
             self.model = CustomModel(config=self.config)
             # raise Exception('unknown model type: ', self.config.model_type)
 
     def _run_train_epoch(self, train_loader):
         """
-        run a training epoch with the data loader
-        :param train_loader: for training data
+        run a training epoch with the my_ai loader
+        :param train_loader: for training my_ai
         :return:
         """
         train_losses = []
@@ -65,9 +76,9 @@ class ImageClassificationTrainer:
 
     def train_model(self, train_loader, val_loader):
         """
-        train the model according to the configuration with the given data
-        :param train_loader: loader for the training data
-        :param val_loader: loader for the validation data
+        train the model according to the configuration with the given my_ai
+        :param train_loader: loader for the training my_ai
+        :param val_loader: loader for the validation my_ai
         :return:
         """
         self.optimizer = Adam(self.model.parameters(), lr=self.config.learning_rate)
@@ -82,7 +93,7 @@ class ImageClassificationTrainer:
     def test_model(self, test_loader):
         """
         test the model to achieve a score
-        :param test_loader: loader for testing data
+        :param test_loader: loader for testing my_ai
         :return:
         """
         raise NotImplementedError('foobar')

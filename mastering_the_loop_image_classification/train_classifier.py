@@ -4,8 +4,8 @@ from torch.utils.data import DataLoader
 import yaml
 
 from config.DTO import TrainingConfig
-from data.dataset import ClassificationDataset
-from data.transformation import DataTransformation
+from my_ai.ImClassDataset import ClassificationDataset
+from my_ai.transformation import DataTransformation
 from training.trainer import ImageClassificationTrainer
 
 
@@ -19,7 +19,7 @@ def main():
             print(exc)
 
     pprint('[INFO] training model with: {}'.format(config))
-    # construct data loaders
+    # construct my_ai loaders
     train_dataset = ClassificationDataset(
         dataset_path=config.train_dataset_path,
         n_classes=config.n_classes,

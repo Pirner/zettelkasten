@@ -1,4 +1,3 @@
-# import cv2
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
@@ -7,7 +6,7 @@ class DataTransformation:
     @staticmethod
     def get_train_transforms(im_h: int, im_w: int):
         """
-        get training data transforms
+        get training my_ai transforms
         :param im_h: image height
         :param im_w: image width
         :return:
@@ -30,7 +29,7 @@ class DataTransformation:
     @staticmethod
     def get_val_transforms(im_h: int, im_w: int):
         """
-        get validation data transforms
+        get validation my_ai transforms
         :param im_h: image height
         :param im_w: image width
         :return:

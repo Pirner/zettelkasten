@@ -9,7 +9,7 @@ def main():
     df['epoch'] = range(len(df))
 
     sns.set_theme()
-    # ax = sns.lineplot(data=df, x="epoch", y="train_loss")
+    # ax = sns.lineplot(my_ai=df, x="epoch", y="train_loss")
     ax = sns.lineplot(data=df, x="epoch", y='train_accuracy')
     ax.legend()
     plt.show()
