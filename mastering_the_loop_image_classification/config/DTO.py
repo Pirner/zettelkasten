@@ -25,6 +25,7 @@ class TrainingConfig:
     train_dataset_path: str
     val_dataset_path: str
     test_dataset_path: str
+    experiment_path: str
 
     # optional values
     backbone: Optional[str] = None

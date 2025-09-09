@@ -24,6 +24,7 @@ class ClassificationDataset(Dataset):
             dataset_path: str,
             n_classes: int,
             transforms,
+            config=None,
     ):
         """
         instantiate classification dataset
@@ -31,10 +32,12 @@ class ClassificationDataset(Dataset):
         and an annotation.csv file
         :param n_classes: number of classes represented through the dataset
         :param transforms: the transformations to apply to the image while loading the my_ai
+        :param config: configuration
         """
         self.dataset_path = dataset_path
         self.n_classes = n_classes
         self.transforms = transforms
+        self.config = config
 
         self._init_dataset()
 
@@ -50,7 +53,13 @@ class ClassificationDataset(Dataset):
             label = np.zeros(self.n_classes, dtype=np.float32)
             label[label_id] = 1.
             im_path = os.path.join(self.dataset_path, 'images', row['Image name'])
-            dp = DataPoint(im_path=im_path, label=label)
+            dp = DataPoint(
+                im_path=im_path,
+                label=label,
+            )
+            if self.config is not None:
+                dp.im_height = self.config.im_height
+                dp.im_width = self.config.im_width
             self.data.append(dp)
 
     def __len__(self):

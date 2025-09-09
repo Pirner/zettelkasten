@@ -4,7 +4,10 @@ from torch.utils.data import DataLoader
 import yaml
 
 from config.DTO import TrainingConfig
+from my_ai.callbacks.ModelCheckpointer import ModelCheckpointer
+from my_ai.callbacks.MetricLogger import MetricLogger
 from my_ai.ImClassDataset import ClassificationDataset
+from my_ai.metrics.Accuracy import Accuracy
 from my_ai.transformation import DataTransformation
 from training.trainer import ImageClassificationTrainer
 
@@ -24,23 +27,38 @@ def main():
         dataset_path=config.train_dataset_path,
         n_classes=config.n_classes,
         transforms=DataTransformation.get_train_transforms(im_h=config.im_height, im_w=config.im_width),
+        config=config,
     )
+
     val_dataset = ClassificationDataset(
         dataset_path=config.val_dataset_path,
         n_classes=config.n_classes,
         transforms=DataTransformation.get_val_transforms(im_h=config.im_height, im_w=config.im_width),
+        config=config,
     )
     test_dataset = ClassificationDataset(
         dataset_path=config.test_dataset_path,
         n_classes=config.n_classes,
         transforms=DataTransformation.get_val_transforms(im_h=config.im_height, im_w=config.im_width),
+        config=config,
     )
 
-    train_dataloader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True)
+    train_dataloader = DataLoader(
+        train_dataset,
+        batch_size=config.batch_size,
+        shuffle=True
+    )
     val_dataloader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=False)
     test_dataloader = DataLoader(test_dataset, batch_size=config.batch_size, shuffle=False)
 
     trainer = ImageClassificationTrainer(config=config)
+    trainer.callbacks = [
+        ModelCheckpointer(config=config),
+        MetricLogger(config=config),
+    ]
+    trainer.metrics = [
+        Accuracy(n_classes=config.n_classes),
+    ]
     trainer.build_model()
     trainer.train_model(train_loader=train_dataloader, val_loader=val_dataloader)
     trainer.test_model(test_loader=test_dataloader)

@@ -2,11 +2,12 @@
 model_type:
   'custom'
 backbone:
-  'resnet18'
+  # 'wide_resnet50_2'
+  'resnet34'
 im_height:
-  256
+  512
 im_width:
-  256
+  800
 patch_size:
   32
 vit_dim:
@@ -14,14 +15,14 @@ vit_dim:
 vit_depth:
   4
 n_classes:
-  5
+  8
 vit_heads:
   8
 vit_mlp_dim:
   256
 # training specific
 epochs:
-  100
+  50
 learning_rate:
   0.0001
 batch_size:
@@ -31,8 +32,10 @@ device:
 
 # dataset and logging
 train_dataset_path:
-  "C:/my_ai/retina_dataset/Diabetic Retinopathy/train"
+  "C:/data/retina_dataset/RetinalOCT_Dataset/RetinalOCT_Dataset/train"
 val_dataset_path:
-  "C:/my_ai/retina_dataset/Diabetic Retinopathy/valid"
+  "C:/data/retina_dataset/RetinalOCT_Dataset/RetinalOCT_Dataset/val"
 test_dataset_path:
-  "C:/my_ai/retina_dataset/Diabetic Retinopathy/test"
+  "C:/data/retina_dataset/RetinalOCT_Dataset/RetinalOCT_Dataset/test"
+experiment_path:
+  "C:/data/retina_dataset/model"

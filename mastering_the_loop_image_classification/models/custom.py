@@ -15,7 +15,9 @@ class CustomModel(nn.Module):
         # Here the size of each output sample is set to 2.
         # Alternatively, it can be generalized to ``nn.Linear(num_ftrs, len(class_names))``.
         self.model_ft.fc = nn.Linear(num_ftrs, self.config.n_classes)
+        self.softmax = nn.Softmax()
 
     def forward(self, x):
         x = self.model_ft(x)
+        x = self.softmax(x)
         return x
