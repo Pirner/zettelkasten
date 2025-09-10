@@ -23,5 +23,15 @@ class Accuracy(ClassificationMetric):
         # correct = (prediction == ground_truth).sum().item()
         # total = ground_truth.size(0)
         # accuracy = correct / total
-        accuracy = self.accuracy(prediction, ground_truth)
+
+        # 1. Get predicted class indices
+        # _, predicted = torch.max(prediction, 1)  # shape: [batch_size]
+
+        # 2. Compare with true labels
+        # correct = (predicted == labels).sum().item()
+
+        # # 3. Calculate accuracy
+        # accuracy = correct / labels.size(0)
+        _, gt_maxed = torch.max(ground_truth, 1)
+        accuracy = self.accuracy(prediction, gt_maxed)
         return accuracy

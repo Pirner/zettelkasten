@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Dict
 
 
 @dataclass
@@ -9,7 +9,7 @@ class TrainingConfig:
     im_height: int
     im_width: int
     patch_size: int
-    n_classes: int
+    classes: Dict[str, int]
     vit_dim: int
     vit_depth: int
     vit_heads: int

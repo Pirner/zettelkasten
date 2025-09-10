@@ -34,7 +34,12 @@ class ModelCheckpointer(Callback):
         pass
 
     def on_epoch_end(self, trainer: ImageClassificationTrainer) -> None:
-        pass
+        """
+        run this method at the end of an epoch
+        :param trainer: the trainer which runs everything
+        :return:
+        """
+        torch.save(trainer.model.state_dict(), os.path.join(self.config.experiment_path, "model_weights.pth"))
 
     def on_batch_start(self, trainer: ImageClassificationTrainer) -> None:
         pass
@@ -51,7 +56,7 @@ class ModelCheckpointer(Callback):
         :param trainer: the trainer which runs everything
         :return:
         """
-        torch.save(trainer.model.state_dict(), os.path.join(self.config.experiment_path, "model_weights.pth"))
+        pass
 
     def on_exception(self, trainer: ImageClassificationTrainer) -> None:
         pass

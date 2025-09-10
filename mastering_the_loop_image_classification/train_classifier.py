@@ -25,20 +25,20 @@ def main():
     # construct my_ai loaders
     train_dataset = ClassificationDataset(
         dataset_path=config.train_dataset_path,
-        n_classes=config.n_classes,
+        classes=config.classes,
         transforms=DataTransformation.get_train_transforms(im_h=config.im_height, im_w=config.im_width),
         config=config,
     )
 
     val_dataset = ClassificationDataset(
         dataset_path=config.val_dataset_path,
-        n_classes=config.n_classes,
+        classes=config.classes,
         transforms=DataTransformation.get_val_transforms(im_h=config.im_height, im_w=config.im_width),
         config=config,
     )
     test_dataset = ClassificationDataset(
         dataset_path=config.test_dataset_path,
-        n_classes=config.n_classes,
+        classes=config.classes,
         transforms=DataTransformation.get_val_transforms(im_h=config.im_height, im_w=config.im_width),
         config=config,
     )
@@ -57,7 +57,7 @@ def main():
         MetricLogger(config=config),
     ]
     trainer.metrics = [
-        Accuracy(n_classes=config.n_classes),
+        Accuracy(n_classes=len(config.classes)),
     ]
     trainer.build_model()
     trainer.train_model(train_loader=train_dataloader, val_loader=val_dataloader)

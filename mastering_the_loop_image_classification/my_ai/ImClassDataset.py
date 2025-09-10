@@ -1,5 +1,6 @@
 import os
-from typing import List
+import glob
+from typing import List, Dict
 
 import numpy as np
 import pandas as pd
@@ -16,13 +17,13 @@ class ClassificationDataset(Dataset):
     df: pd.DataFrame
     data: List[DataPoint]
     dataset_path: str
-    n_classes: int
+    classes: Dict[str, int]
     transforms = None
 
     def __init__(
             self,
             dataset_path: str,
-            n_classes: int,
+            classes: Dict[str, int],
             transforms,
             config=None,
     ):
@@ -30,12 +31,12 @@ class ClassificationDataset(Dataset):
         instantiate classification dataset
         :param dataset_path: the path to the dataset location, assumed is a folder with images that contains .jpg files
         and an annotation.csv file
-        :param n_classes: number of classes represented through the dataset
+        :param classes: represented through the dataset
         :param transforms: the transformations to apply to the image while loading the my_ai
         :param config: configuration
         """
         self.dataset_path = dataset_path
-        self.n_classes = n_classes
+        self.classes = classes
         self.transforms = transforms
         self.config = config
 
@@ -46,21 +47,22 @@ class ClassificationDataset(Dataset):
         initialize the my_ai points to make the dataset ready
         :return:
         """
-        self.df = pd.read_csv(os.path.join(self.dataset_path, 'annotations.csv'))
         self.data = []
-        for index, row in self.df.iterrows():
-            label_id = row['Retinopathy grade']
-            label = np.zeros(self.n_classes, dtype=np.float32)
-            label[label_id] = 1.
-            im_path = os.path.join(self.dataset_path, 'images', row['Image name'])
-            dp = DataPoint(
-                im_path=im_path,
-                label=label,
-            )
-            if self.config is not None:
-                dp.im_height = self.config.im_height
-                dp.im_width = self.config.im_width
-            self.data.append(dp)
+        im_paths = glob.glob(os.path.join(self.dataset_path, '**/*.jpg'), recursive=True)
+        for c_name, c_id in self.classes.items():
+            c_images = list(filter(lambda x: c_name.lower() in x.lower(), im_paths))
+            # c_images = c_images[:500]
+            label = np.zeros(len(self.classes), dtype=np.float32)
+            label[c_id] = 1.
+            for im_path in c_images:
+                dp = DataPoint(
+                    im_path=im_path,
+                    label=label,
+                )
+                if self.config is not None:
+                    dp.im_height = self.config.im_height
+                    dp.im_width = self.config.im_width
+                self.data.append(dp)
 
     def __len__(self):
         return len(self.data)
