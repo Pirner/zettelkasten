@@ -6,6 +6,7 @@ import yaml
 from config.DTO import TrainingConfig
 from my_ai.callbacks.ModelCheckpointer import ModelCheckpointer
 from my_ai.callbacks.MetricLogger import MetricLogger
+from my_ai.callbacks.TensorboardLogger import TensorboardLogger
 from my_ai.ImClassDataset import ClassificationDataset
 from my_ai.metrics.Accuracy import Accuracy
 from my_ai.transformation import DataTransformation
@@ -55,6 +56,7 @@ def main():
     trainer.callbacks = [
         ModelCheckpointer(config=config),
         MetricLogger(config=config),
+        TensorboardLogger(experiment_path=config.experiment_path),
     ]
     trainer.metrics = [
         Accuracy(n_classes=len(config.classes)),

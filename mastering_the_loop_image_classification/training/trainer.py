@@ -15,6 +15,7 @@ class ImageClassificationTrainer:
     logs = None
     callbacks = None
     metrics = None
+    epoch: int
 
     def __init__(self, config: TrainingConfig):
         """
@@ -30,6 +31,7 @@ class ImageClassificationTrainer:
             'train_loss': [],
             'val_loss': [],
         }
+        self.epoch = 0
 
     def build_model(self):
         """
@@ -141,6 +143,7 @@ class ImageClassificationTrainer:
             self._run_train_epoch(train_loader)
             self._run_val_epoch(val_loader)
 
+            self.epoch = e
             for cb in self.callbacks:
                 cb.on_epoch_end(self)
 
