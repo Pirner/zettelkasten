@@ -1,3 +1,4 @@
+import os
 from pprint import pprint
 
 from torch.utils.data import DataLoader
@@ -22,6 +23,9 @@ def main():
         except yaml.YAMLError as exc:
             print(exc)
 
+    n = len(os.listdir(config.experiment_path))
+    config.experiment_path = os.path.join(config.experiment_path, '{:03d}'.format(n))
+    os.makedirs(config.experiment_path)
     pprint('[INFO] training model with: {}'.format(config))
     # construct my_ai loaders
     train_dataset = ClassificationDataset(
