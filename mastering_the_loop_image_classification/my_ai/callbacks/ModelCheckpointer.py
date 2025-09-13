@@ -41,6 +41,15 @@ class ModelCheckpointer(Callback):
         """
         torch.save(trainer.model.state_dict(), os.path.join(self.config.experiment_path, "model_weights.pth"))
 
+        example_inputs = (torch.randn(1, 3, self.config.im_height, self.config.im_width).to('cuda'),)
+        # onnx_model = torch.onnx.export(trainer.model, example_inputs)
+        # onnx_model.save(os.path.join)
+        torch.onnx.export(
+            trainer.model, example_inputs,
+            os.path.join(self.config.experiment_path, 'model.onnx'),
+            # opset_version=12,
+        )
+
     def on_batch_start(self, trainer: ImageClassificationTrainer) -> None:
         pass
 
