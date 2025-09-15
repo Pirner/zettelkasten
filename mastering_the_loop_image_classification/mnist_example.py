@@ -17,7 +17,7 @@ torch.manual_seed(0)
 
 
 def main():
-    # Loading data
+    # Loading my_ai
     transform = ToTensor()
 
     train_set = MNIST(root='./../datasets', train=True, download=True, transform=transform)
