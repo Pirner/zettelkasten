@@ -51,7 +51,7 @@ class ClassificationDataset(Dataset):
         im_paths = glob.glob(os.path.join(self.dataset_path, '**/*.jpg'), recursive=True)
         for c_name, c_id in self.classes.items():
             c_images = list(filter(lambda x: c_name.lower() in x.lower(), im_paths))
-            # c_images = c_images[:500]
+            # c_images = c_images[:5]
             label = np.zeros(len(self.classes), dtype=np.float32)
             label[c_id] = 1.
             for im_path in c_images:
