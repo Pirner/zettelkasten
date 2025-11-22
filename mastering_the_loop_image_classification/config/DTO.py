@@ -29,3 +29,4 @@ class TrainingConfig:
 
     # optional values
     backbone: Optional[str] = None
+    use_augmentations: Optional[bool] = False

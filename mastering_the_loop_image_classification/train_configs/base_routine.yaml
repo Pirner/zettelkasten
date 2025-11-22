@@ -42,8 +42,7 @@ batch_size:
   8
 device:
   "cuda"
-use_augmentations:
-  true
+
 # dataset and logging
 train_dataset_path:
   "C:/data/retina_dataset/RetinalOCT_Dataset/RetinalOCT_Dataset/train"

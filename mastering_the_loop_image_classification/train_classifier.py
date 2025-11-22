@@ -15,6 +15,7 @@ from training.trainer import ImageClassificationTrainer
 
 
 def main():
+    config_path = 'train_configs/base_routine.yaml'
     config_path = 'train_configs/implementing.yaml'
     with open(config_path) as stream:
         try:
