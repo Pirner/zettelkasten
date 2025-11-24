@@ -1,0 +1,57 @@
+# model specific
+model_type:
+  'custom'
+backbone:
+  'convnext_tiny'
+  # 'efficientnet_b0'
+  # 'resnet18'
+  # 'wide_resnet50_2'
+  # 'convnext_base'
+  # 'vit_b_16'
+im_height:
+  160
+im_width:
+  320
+patch_size:
+  32
+vit_dim:
+  128
+vit_depth:
+  4
+classes:
+  {
+    "AMD": 0,
+    "CNV": 1,
+    "CSR": 2,
+    "DME": 3,
+    "DR": 4,
+    "DRUSEN": 5,
+    "MH": 6,
+    "NORMAL": 7
+  }
+vit_heads:
+  8
+vit_mlp_dim:
+  256
+# training specific
+epochs:
+  50
+learning_rate:
+  0.001
+batch_size:
+  8
+device:
+  "cuda"
+use_augmentations:
+  true
+scheduler:
+  1
+# dataset and logging
+train_dataset_path:
+  "C:/data/retina_dataset/RetinalOCT_Dataset/RetinalOCT_Dataset/train"
+val_dataset_path:
+  "C:/data/retina_dataset/RetinalOCT_Dataset/RetinalOCT_Dataset/val"
+test_dataset_path:
+  "C:/data/retina_dataset/RetinalOCT_Dataset/RetinalOCT_Dataset/test"
+experiment_path:
+  "C:/data/retina_dataset/model/models_local"

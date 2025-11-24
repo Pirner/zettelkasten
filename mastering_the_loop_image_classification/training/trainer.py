@@ -1,11 +1,13 @@
 import torch
 from torch.nn import CrossEntropyLoss
 from torch.optim import Adam
+import torch.optim as optim
 from tqdm import tqdm
 
 from config.DTO import TrainingConfig
 from models.vit import ViT
 from models.custom import CustomModel
+from my_ai.ai_enums import Scheduler
 
 
 class ImageClassificationTrainer:
@@ -30,6 +32,7 @@ class ImageClassificationTrainer:
         self.logs = {
             'train_loss': [],
             'val_loss': [],
+            'learning_rate': [],
         }
         self.epoch = 0
 
@@ -137,13 +140,20 @@ class ImageClassificationTrainer:
 
         self.optimizer = Adam(self.model.parameters(), lr=self.config.learning_rate)
         self.model = self.model.to(self.config.device)
+        if self.config.scheduler == Scheduler.NoScheduling:
+            scheduler = None
+        elif self.config.scheduler == Scheduler.StepLR:
+            scheduler = optim.lr_scheduler.StepLR(self.optimizer, step_size=20, gamma=0.1)
 
         for e in range(self.config.epochs):
             print('\n[INFO] running epoch {}/{}'.format(e + 1, self.config.epochs))
             self._run_train_epoch(train_loader)
             self._run_val_epoch(val_loader)
 
+            if scheduler:
+                scheduler.step()
             self.epoch = e
+            self.logs['learning_rate'].append(scheduler.get_last_lr()[0])
             for cb in self.callbacks:
                 cb.on_epoch_end(self)
 

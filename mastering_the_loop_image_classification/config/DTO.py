@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional, Dict
 
+from my_ai.ai_enums import Scheduler
+
 
 @dataclass
 class TrainingConfig:
@@ -30,3 +32,4 @@ class TrainingConfig:
     # optional values
     backbone: Optional[str] = None
     use_augmentations: Optional[bool] = False
+    scheduler: Optional[int] = 0
