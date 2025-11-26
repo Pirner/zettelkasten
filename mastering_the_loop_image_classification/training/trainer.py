@@ -144,6 +144,9 @@ class ImageClassificationTrainer:
             scheduler = None
         elif self.config.scheduler == Scheduler.StepLR:
             scheduler = optim.lr_scheduler.StepLR(self.optimizer, step_size=20, gamma=0.1)
+        elif self.config.scheduler == Scheduler.CosineAnnealing:
+            eta_min = 0.0000001
+            scheduler = optim.lr_scheduler.CosineAnnealingLR(self.optimizer, eta_min=eta_min, T_max=self.config.epochs)
 
         for e in range(self.config.epochs):
             print('\n[INFO] running epoch {}/{}'.format(e + 1, self.config.epochs))
