@@ -18,6 +18,7 @@ class ImageClassificationTrainer:
     callbacks = None
     metrics = None
     epoch: int
+    scheduler = None
 
     def __init__(self, config: TrainingConfig):
         """
@@ -140,23 +141,21 @@ class ImageClassificationTrainer:
 
         self.optimizer = Adam(self.model.parameters(), lr=self.config.learning_rate)
         self.model = self.model.to(self.config.device)
-        if self.config.scheduler == Scheduler.NoScheduling:
-            scheduler = None
-        elif self.config.scheduler == Scheduler.StepLR:
-            scheduler = optim.lr_scheduler.StepLR(self.optimizer, step_size=20, gamma=0.1)
+        if self.config.scheduler == Scheduler.StepLR:
+            self.scheduler = optim.lr_scheduler.StepLR(self.optimizer, step_size=20, gamma=0.1)
         elif self.config.scheduler == Scheduler.CosineAnnealing:
             eta_min = 0.0000001
-            scheduler = optim.lr_scheduler.CosineAnnealingLR(self.optimizer, eta_min=eta_min, T_max=self.config.epochs)
+            self.scheduler = optim.lr_scheduler.CosineAnnealingLR(self.optimizer, eta_min=eta_min, T_max=self.config.epochs)
 
         for e in range(self.config.epochs):
             print('\n[INFO] running epoch {}/{}'.format(e + 1, self.config.epochs))
             self._run_train_epoch(train_loader)
             self._run_val_epoch(val_loader)
 
-            if scheduler:
-                scheduler.step()
+            if self.scheduler:
+                self.scheduler.step()
             self.epoch = e
-            self.logs['learning_rate'].append(scheduler.get_last_lr()[0])
+            self.logs['learning_rate'].append(self.optimizer.param_groups[0]['lr'])
             for cb in self.callbacks:
                 cb.on_epoch_end(self)
 
