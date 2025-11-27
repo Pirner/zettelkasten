@@ -142,7 +142,7 @@ class ImageClassificationTrainer:
         self.optimizer = Adam(self.model.parameters(), lr=self.config.learning_rate)
         self.model = self.model.to(self.config.device)
         if self.config.scheduler == Scheduler.StepLR:
-            self.scheduler = optim.lr_scheduler.StepLR(self.optimizer, step_size=20, gamma=0.1)
+            self.scheduler = optim.lr_scheduler.StepLR(self.optimizer, step_size=100, gamma=0.1)
         elif self.config.scheduler == Scheduler.CosineAnnealing:
             eta_min = 0.0000001
             self.scheduler = optim.lr_scheduler.CosineAnnealingLR(self.optimizer, eta_min=eta_min, T_max=self.config.epochs)
