@@ -37,13 +37,15 @@ vit_mlp_dim:
 epochs:
   50
 learning_rate:
-  0.0001
+  0.001
 batch_size:
   8
 device:
   "cuda"
 use_augmentations:
   true
+scheduler:
+  1
 # dataset and logging
 train_dataset_path:
   "C:/data/retina_dataset/RetinalOCT_Dataset/RetinalOCT_Dataset/train"

@@ -1,11 +1,13 @@
 import torch
 from torch.nn import CrossEntropyLoss
 from torch.optim import Adam
+import torch.optim as optim
 from tqdm import tqdm
 
 from config.DTO import TrainingConfig
 from models.vit import ViT
 from models.custom import CustomModel
+from my_ai.ai_enums import Scheduler
 
 
 class ImageClassificationTrainer:
@@ -16,6 +18,7 @@ class ImageClassificationTrainer:
     callbacks = None
     metrics = None
     epoch: int
+    scheduler = None
 
     def __init__(self, config: TrainingConfig):
         """
@@ -30,6 +33,7 @@ class ImageClassificationTrainer:
         self.logs = {
             'train_loss': [],
             'val_loss': [],
+            'learning_rate': [],
         }
         self.epoch = 0
 
@@ -137,13 +141,21 @@ class ImageClassificationTrainer:
 
         self.optimizer = Adam(self.model.parameters(), lr=self.config.learning_rate)
         self.model = self.model.to(self.config.device)
+        if self.config.scheduler == Scheduler.StepLR:
+            self.scheduler = optim.lr_scheduler.StepLR(self.optimizer, step_size=100, gamma=0.1)
+        elif self.config.scheduler == Scheduler.CosineAnnealing:
+            eta_min = 0.0000001
+            self.scheduler = optim.lr_scheduler.CosineAnnealingLR(self.optimizer, eta_min=eta_min, T_max=self.config.epochs)
 
         for e in range(self.config.epochs):
             print('\n[INFO] running epoch {}/{}'.format(e + 1, self.config.epochs))
             self._run_train_epoch(train_loader)
             self._run_val_epoch(val_loader)
 
+            if self.scheduler:
+                self.scheduler.step()
             self.epoch = e
+            self.logs['learning_rate'].append(self.optimizer.param_groups[0]['lr'])
             for cb in self.callbacks:
                 cb.on_epoch_end(self)
 

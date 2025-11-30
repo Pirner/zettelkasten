@@ -16,6 +16,7 @@ class ModelCheckpointer(Callback):
         :param config: configuration for the training run
         """
         self.config = config
+        self.best_val_loss = 999999
 
     def on_train_start(self, trainer: ImageClassificationTrainer) -> None:
         with open(os.path.join(self.config.experiment_path, 'config.json'), "w") as file:
@@ -39,6 +40,12 @@ class ModelCheckpointer(Callback):
         :param trainer: the trainer which runs everything
         :return:
         """
+        last_val_loss = trainer.logs['val_loss'][-1]
+        if last_val_loss > self.best_val_loss:
+            return
+        self.best_val_loss = last_val_loss
+        print('[INFO] val_loss improved from {} to {}, saving model'.format(self.best_val_loss, last_val_loss))
+
         torch.save(trainer.model.state_dict(), os.path.join(self.config.experiment_path, "model_weights.pth"))
 
         example_inputs = (torch.randn(1, 3, self.config.im_height, self.config.im_width).to('cuda'),)
